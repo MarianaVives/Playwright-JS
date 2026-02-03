@@ -16,12 +16,14 @@ const config = ({
   testDir: './tests', //all tests in that folder will get triggered
   timeout: 40*1000,//override the default settings
   expect:{
-    timeout: 40*1000 //Exclusively for assertion validations
+    timeout: 5000 //Exclusively for assertion validations
   },
   reporter: 'html',
   use: {
-    //Default timeout is 30s
-    browserName : 'chromium'
+    ///Default timeout is 30s
+    //browserName : 'webkit',
+    browserName : "chromium",
+    headless : false
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
   },
 

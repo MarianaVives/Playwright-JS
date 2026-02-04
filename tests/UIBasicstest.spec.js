@@ -35,7 +35,7 @@ test("Page Playwright test RS Academy", async({page})=>{
     await expect(page).toHaveTitle("ProtoCommerce");
 })
 
-test.only("Page Playwright test RS Academy wrong Password", async({page})=>{
+test("Page Playwright test RS Academy wrong Password", async({page})=>{
     
     let username = "rahulshettyacademy";
     let incorrect_pass = "wrongPass1";

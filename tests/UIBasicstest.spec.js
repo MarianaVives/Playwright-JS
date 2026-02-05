@@ -61,3 +61,59 @@ test("Page Playwright test RS Academy wrong Password", async({page})=>{
     let titles_products = await product_list.allTextContents(); //Waits for an array that can be empty therefore it can return something empty if executed before elements are shown in the DOM
     console.log(titles_products);
 });
+
+test("Handle Select/Static Dropdown & Radio btn with Playwright", async({page})=>{
+    
+    let username = "rahulshettyacademy";
+    let incorrect_pass = "wrongPass1";
+    let correct_pass = "Learning@830$3mK2";
+
+    const username_loc = page.locator("#username");
+    const pass_loc = page.locator("#password");
+    const signin_btn = page.locator("#signInBtn");
+    const document_link = page.locator("[href*='documents-request']")
+
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+    await expect(page).toHaveTitle("LoginPage Practise | Rahul Shetty Academy");
+    await username_loc.fill(username);
+    await pass_loc.fill(correct_pass);
+    const dropdown = page.locator("select.form-control");
+    await dropdown.selectOption("consult");
+    //await page.pause(); //to see if it clicked correct optn
+    //radio btn
+    await page.locator(".radiotextsty").last().click();
+    console.log(await page.locator(".radiotextsty").last().isChecked);
+    expect(await page.locator(".radiotextsty").last()).toBeChecked();
+    //page popup
+    await page.locator("#okayBtn").click();
+    //Terms and conditions checkbox
+    await page.locator("#terms").check();
+    await expect(page.locator("#terms")).toBeChecked();
+    await page.locator("#terms").uncheck();
+    expect(await page.locator("#terms").isChecked()).toBeFalsy();
+    //Validate blinking text is visible
+    await expect(document_link).toHaveAttribute("class","blinkingText");
+    await signin_btn.click();
+    await expect(page).toHaveTitle("ProtoCommerce");
+    //Handling child windows
+});
+
+test.only("Child windows handle with Playwright", async({browser})=>{
+    
+    const context = await browser.newContext(); 
+    const page = await context.newPage();
+
+    const document_link = page.locator("[href*='documents-request']")
+
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+    //console.log(await page.locator("#username").inputValue());
+    await expect(page).toHaveTitle("LoginPage Practise | Rahul Shetty Academy");
+    await expect(document_link).toHaveAttribute("class","blinkingText");
+    const [newPage]= await Promise.all([ 
+        //Promises exist in 3 states: pending, rejected and fulfilled 
+        context.waitForEvent('page'),
+        document_link.click(),
+    ]);
+    const text = await newPage.locator(".red").textContent();
+    console.log(text);
+})

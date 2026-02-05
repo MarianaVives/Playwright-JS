@@ -98,11 +98,11 @@ test("Handle Select/Static Dropdown & Radio btn with Playwright", async({page})=
     //Handling child windows
 });
 
-test.only("Child windows handle with Playwright", async({browser})=>{
+test("Child windows handle with Playwright", async({browser})=>{
     
     const context = await browser.newContext(); 
     const page = await context.newPage();
-
+    const username_loc = page.locator("#username");
     const document_link = page.locator("[href*='documents-request']")
 
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
@@ -116,4 +116,9 @@ test.only("Child windows handle with Playwright", async({browser})=>{
     ]);
     const text = await newPage.locator(".red").textContent();
     console.log(text);
+    const array = text.split("@")
+    const domain = array[1].split(" ")[0]
+    console.log(domain)
+    await username_loc.fill(domain);
+    console.log(await username_loc.inputValue());
 })

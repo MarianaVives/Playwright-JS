@@ -1,7 +1,7 @@
 //Documentation: https://playwright.dev/
 const { test, expect } = require('@playwright/test');
 
-test.only("Calendar validations", async ({ page }) => {
+test("Calendar validations", async ({ page }) => {
     await page.goto("https://rahulshettyacademy.com/seleniumPractise/#/offers");
     await expect(page).toHaveTitle("GreenKart - veg and fruits kart");
 

@@ -23,8 +23,9 @@ const config = ({
     ///Default timeout is 30s
     //browserName : 'webkit',
     browserName : "chromium",
-    headless : true
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    headless : true,
+    screenshot: "on", //screenshot for every step
+    trace: "on", //log information that can be important
   },
 
 });

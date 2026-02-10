@@ -1,7 +1,7 @@
 //Documentation: https://playwright.dev/
 const { test, expect } = require('@playwright/test');
 
-test.only("E2E shop products happy path", async ({ page }) => {
+test("E2E shop products happy path", async ({ page }) => {
     await page.goto("https://rahulshettyacademy.com/client/auth/login");
     await expect(page).toHaveTitle("Let's Shop");
     let email = "marianavivess@hotmail.com";

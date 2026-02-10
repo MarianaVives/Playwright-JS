@@ -9,7 +9,7 @@ test.only("E2E shop products happy path using playwright getBy methods", async (
     const product_name = "ZARA COAT 3";
 
     const username_loc = page.getByPlaceholder("email@example.com");
-    const pass_loc = page.getByPlaceholder("enter your password");
+    const pass_loc = page.getByPlaceholder("enter your passsword");
     const signin_btn = page.getByRole("button", {name:"Login"});
     const shop_page_results_title = page.locator("#res");
 
@@ -22,8 +22,9 @@ test.only("E2E shop products happy path using playwright getBy methods", async (
     await page.waitForLoadState('networkidle'); //Discouraged - might be flaky
     await page.locator(".card-body b").first().waitFor();
     //Add product to cart
-    await page.locator(".card-body").filter({hasText:product_name}).getByRole("button", {name: "Add to Cart"})
+    await page.locator(".card-body").filter({hasText:product_name}).getByRole("button", {name: "Add to Cart"}).click();
     await expect(page.getByText("ZARA COAT 3")).toBeVisible();
+    await page.getByRole("listitem").getByRole("button", {name: "Cart"}).click();
     //Go to Cart page
     await page.getByRole("button",{name :"Checkout"}).click();
     await page.locator("div li").first().waitFor(); // Is visible does not support this to fail. so we use waitFor

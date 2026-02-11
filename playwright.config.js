@@ -23,7 +23,7 @@ const config = ({
     ///Default timeout is 30s
     //browserName : 'webkit',
     browserName : "chromium",
-    headless : true,
+    headless : false,
     screenshot: "on", //screenshot for every step
     trace: "retain-on-failure", //on, off, retain-on-failure log information that can be important
   },

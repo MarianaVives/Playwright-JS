@@ -25,7 +25,7 @@ const config = ({
     browserName : "chromium",
     headless : true,
     screenshot: "on", //screenshot for every step
-    trace: "on", //log information that can be important
+    trace: "retain-on-failure", //on, off, retain-on-failure log information that can be important
   },
 
 });

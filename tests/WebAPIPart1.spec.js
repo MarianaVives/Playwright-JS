@@ -1,44 +1,63 @@
 //Documentation: https://playwright.dev/
 const { test, expect, request } = require('@playwright/test');
-let email = "marianavivess@hotmail.com";
-let pass = "Password123";
-const object = {userEmail: email, userPassword: pass};
+const email = "marianavivess@hotmail.com";
+const pass = "Password123";
+const productOrderId = "6960eae1c941646b7a8b3ed3";
+const country = "Mexico";
+const object = { userEmail: email, userPassword: pass };
 let token;
+let ordersId;
+const order = {orders: [{country: country, productOrderedId: productOrderId }]};
 
-
-test.beforeAll( async()=>{
+test.beforeAll(async () => {
     //Execute only once before test1, test2, test3. Execute each test in seq
-    let url = "https://rahulshettyacademy.com/api/ecom/auth/login";
+    let loginURL = "https://rahulshettyacademy.com/api/ecom/auth/login";
     const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post(url, {data : object});
+    const loginResponse = await apiContext.post(loginURL, { data: object });
     expect(loginResponse.ok()).toBeTruthy(); //200, 201
     const loginResponse_json = await loginResponse.json();
     token = loginResponse_json.token;
+
+    //create order
+    let createOrderUrl = "https://rahulshettyacademy.com/api/ecom/order/create-order";
+    const createOrderResponse = await apiContext.post(createOrderUrl,
+        {
+            data: order,
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json"
+            },
+        });
+    const createOrderResponse_json = await createOrderResponse.json();
+    console.log(createOrderResponse_json);
+    //expect(createOrderResponse.ok()).toBeTruthy();
+    ordersId = createOrderResponse_json.orders[0];
+    console.log(ordersId);
+
 });
 
 
 test.only("Use Web API to skip login with playwright", async ({ page }) => {
     //Insert a value i}n the local storage - value is the token
     //Anonymus fct takes two params: function and parameter
-    page.addInitScript(value =>{
+    page.addInitScript(value => {
         window.localStorage.setItem("token", value);
     }, token);
 
     //Bypass login screen
     await page.goto("https://rahulshettyacademy.com/client");
-    const product_name = "ZARA COAT 3";
-    await page.locator(".card-body").filter({hasText:product_name}).getByRole("button", {name: "Add to Cart"}).click();
-    await expect(page.getByText("ZARA COAT 3")).toBeVisible();
-    await page.getByRole("listitem").getByRole("button", {name: "Cart"}).click();
-    //Go to Cart page
-    await page.getByRole("button",{name :"Checkout"}).click();
-    await page.locator("div li").first().waitFor(); // Is visible does not support this to fail. so we use waitFor
-    //Select country through dropdown menu
-    await page.getByPlaceholder("Select Country").pressSequentially("united");
-    await page.getByRole("button", {name: "United Kingdom"}).click();
-    //Place order
-    await page.getByText("PLACE ORDER").click();
-    //Confirm order placed
-    page.locator(".hero-primary").waitFor();
-    await expect(page.getByText("Thankyou for the order. ")).toBeVisible();
-})
+   
+    await page.locator("button[routerlink*='myorders']").click();
+    await page.locator("tbody").waitFor();
+    const rows = await page.locator("tbody tr");
+
+    for (let i = 0; i < await rows.count(); ++i) {
+        const rowOrderId = await rows.nth(i).locator("th").textContent();
+        if (ordersId.includes(rowOrderId)) {
+            await rows.nth(i).locator("button").first().click();
+            break;
+        }
+    }
+    const orderIdDetails = await page.locator(".col-text").textContent();
+    expect(ordersId.includes(orderIdDetails)).toBeTruthy();
+});

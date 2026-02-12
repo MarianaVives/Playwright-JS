@@ -1,48 +1,27 @@
 //Documentation: https://playwright.dev/
 const { test, expect, request } = require('@playwright/test');
-const email = "marianavivess@hotmail.com";
-const pass = "Password123";
+const {APIUtils} = require("./utils/APIUtils");
+
 const productOrderId = "6960eae1c941646b7a8b3ed3";
 const country = "Mexico";
-const object = { userEmail: email, userPassword: pass };
-let token;
-let ordersId;
+const object = { userEmail: "marianavivess@hotmail.com", userPassword: "Password123" };
 const order = {orders: [{country: country, productOrderedId: productOrderId }]};
+let response;
 
 test.beforeAll(async () => {
     //Execute only once before test1, test2, test3. Execute each test in seq
-    let loginURL = "https://rahulshettyacademy.com/api/ecom/auth/login";
-    const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post(loginURL, { data: object });
-    expect(loginResponse.ok()).toBeTruthy(); //200, 201
-    const loginResponse_json = await loginResponse.json();
-    token = loginResponse_json.token;
-
-    //create order
-    let createOrderUrl = "https://rahulshettyacademy.com/api/ecom/order/create-order";
-    const createOrderResponse = await apiContext.post(createOrderUrl,
-        {
-            data: order,
-            headers: {
-                "Authorization": token,
-                "Content-Type": "application/json"
-            },
-        });
-    const createOrderResponse_json = await createOrderResponse.json();
-    console.log(createOrderResponse_json);
-    //expect(createOrderResponse.ok()).toBeTruthy();
-    ordersId = createOrderResponse_json.orders[0];
-    console.log(ordersId);
-
+   const apiContext = await request.newContext();
+   const apiUtils = new APIUtils(apiContext, object);
+   response = await apiUtils.createOrder(order);
 });
 
 
-test.only("Use Web API to skip login with playwright", async ({ page }) => {
-    //Insert a value i}n the local storage - value is the token
-    //Anonymus fct takes two params: function and parameter
-    page.addInitScript(value => {
+test.only("@API Use Web API to skip login with playwright", async ({ page }) => {
+
+    
+    await page.addInitScript(value => {
         window.localStorage.setItem("token", value);
-    }, token);
+    }, response.token);
 
     //Bypass login screen
     await page.goto("https://rahulshettyacademy.com/client");
@@ -53,11 +32,11 @@ test.only("Use Web API to skip login with playwright", async ({ page }) => {
 
     for (let i = 0; i < await rows.count(); ++i) {
         const rowOrderId = await rows.nth(i).locator("th").textContent();
-        if (ordersId.includes(rowOrderId)) {
+        if (response.orderId.includes(rowOrderId)) {
             await rows.nth(i).locator("button").first().click();
             break;
         }
     }
     const orderIdDetails = await page.locator(".col-text").textContent();
-    expect(ordersId.includes(orderIdDetails)).toBeTruthy();
+    expect(response.orderId.includes(orderIdDetails)).toBeTruthy();
 });

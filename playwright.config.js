@@ -15,6 +15,7 @@ import { chromium, defineConfig, devices } from '@playwright/test';
 const config = ({
   testDir: './tests', //all tests in that folder will get triggered
   timeout: 40*1000,//override the default settings
+  //timeout: 100*1000, //For debugging
   expect:{
     timeout: 5000 //Exclusively for assertion validations
   },
@@ -26,6 +27,7 @@ const config = ({
     headless : false,
     screenshot: "on", //screenshot for every step
     trace: "retain-on-failure", //on, off, retain-on-failure log information that can be important
+    
   },
 
 });

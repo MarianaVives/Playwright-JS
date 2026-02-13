@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 let webContext;
 
-test.beforeAll(async ({browser})=>{
+test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
     //Login
@@ -12,11 +12,11 @@ test.beforeAll(async ({browser})=>{
     await page.locator("#login").click();
     await expect(page.locator("#res")).toContainText("Showing")
     await page.waitForLoadState('networkidle');
-    context.storageState({path: "state.json"});//Store cookies, local storage etc. in a json file that will be generated
-    webContext = await browser.newContext({storageState:"state.json"});
+    context.storageState({ path: "state.json" });//Store cookies, local storage etc. in a json file that will be generated
+    webContext = await browser.newContext({ storageState: "state.json" });
 });
 
-test.only("E2E shop products happy path", async () => {
+test("E2E shop products happy path", async () => {
     const product_name = "ZARA COAT 3";
     const email = "marianavivess@hotmail.com";
     const page = await webContext.newPage();
@@ -80,7 +80,7 @@ test.only("E2E shop products happy path", async () => {
 
 })
 
-test.only("test case 2", async()=>{
+test("test case 2", async () => {
     const page = await webContext.newPage();
     await page.goto("https://rahulshettyacademy.com/client");
     const titles = await page.locator(".card-body b").allTextContents();

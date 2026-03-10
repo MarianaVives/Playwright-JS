@@ -6,7 +6,7 @@ const productOrderId = "6960eae1c941646b7a8b3ed3";
 const country = "Mexico";
 const object = { userEmail: "marianavivess@hotmail.com", userPassword: "Password123" };
 const order = { orders: [{ country: country, productOrderedId: productOrderId }] };
-const fakePayloadOrders={data:[], message:"No Orders"};
+const fakePayloadOrders = { data: [], message: "No Orders" };
 let response;
 
 test.beforeAll(async () => {
@@ -17,7 +17,7 @@ test.beforeAll(async () => {
 });
 
 
-test.only("@SP Network Test", async ({ page }) => {
+test("@SP Network Test", async ({ page }) => {
     await page.addInitScript(value => {
         window.localStorage.setItem("token", value);
     }, response.token);
@@ -26,12 +26,12 @@ test.only("@SP Network Test", async ({ page }) => {
     await page.goto("https://rahulshettyacademy.com/client");
 
     await page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/6984ac66c941646b7ad780c7",
-       async route=>{ 
+        async route => {
             //intercpet response - API response->|fake response- playwright|=>broser-> render data in FE
             const response = await page.request.fetch(route.request()) //real response
             let body = JSON.stringify(fakePayloadOrders);
             route.fulfill({
-                response, 
+                response,
                 body,
             });
         });

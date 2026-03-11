@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 
-test.only("Security test request intercept", async ({ page }) => {
+test("Security test request intercept", async ({ page }) => {
     //login
     await page.goto("https://rahulshettyacademy.com/client");
     await page.locator("#userEmail").fill("anshika@gmail.com");
@@ -17,3 +17,20 @@ test.only("Security test request intercept", async ({ page }) => {
     await page.locator("button:has-text('View')").first().click();
     await expect(page.locator("p").last()).toHaveText("You are not authorize to view this order");
 });
+
+test("Browser Context-Validating Error Login - alteration to avoid response to reaching out browser", async({browser})=>{
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    page.route('**/*.{jpg,png,jpeg}', route => route.abort()); //Any url remove images
+    const username = page.locator('#username');
+    const signIn = page.locator("#signInBtn");
+    const cardTitles = page.locator(".card-body a");
+    page.on('request', request => console.log(request.url()));
+    page.on('response', response=> console.log(response.url(), response.status()));
+    await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+    console.log(await page.title());
+    await username.fill("rahulshetty");
+    await page.locator("[type='password']").fill("learning");
+    await signIn.click();
+    console.log(await page.locator("div[style*='block']").textContent())
+})

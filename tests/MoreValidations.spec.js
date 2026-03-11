@@ -42,3 +42,21 @@ test("frames with playwright", async({page})=>{
     const number_participants = textCheck.split(" ")[1];
     console.log("text check" + textCheck + " number participants " + number_participants );
 });
+
+test("screenshot on elements and visual comparisons", async({page})=>{
+    await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
+    await expect(page).toHaveTitle("Practice Page");
+    await expect(page.locator("#displayed-text")).toBeVisible();
+    await page.locator("#displayed-text").screenshot({path: 'partialscreenshot.png'}); //Screenshot to the element / locator level
+    await page.locator("#hide-textbox").click();
+    await page.screenshot({path: 'screenshot.png'}); //screenshot to the whole page
+    await expect(page.locator("#displayed-text")).toBeHidden();
+    await page.locator("#show-textbox").click();
+    await expect(page.locator("#displayed-text")).toBeVisible();
+});
+
+test("visual testing", async({page})=>{
+    await page.goto("https://www.flightaware.com/");
+    expect(await page.screenshot()).toMatchSnapshot('landing.png'); //first run it will fail as it will create the ss, second time the comparison will occur
+})
+//screenshot - store -> screenshot

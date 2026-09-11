@@ -24,6 +24,8 @@ const config = ({
     ///Default timeout is 30s
     //browserName : 'webkit',
     browserName : "chromium",
+    actionTimeout: 10*1000, //10 seconds for each action,
+    navigationTimeout: 20*1000, //20 seconds for each navigation
     headless : false,
     screenshot: "on", //screenshot for every step
     trace: "retain-on-failure", //on, off, retain-on-failure log information that can be important

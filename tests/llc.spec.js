@@ -33,7 +33,7 @@ test("Playwright UI runner", async({page})=>{
     await page.getByLabel("Employed").check();
     await page.getByLabel("Gender").selectOption("Female");
     await page.getByPlaceholder("Password").fill(pass);
-    await page.getByRole("button", {name: "Submit"}).click();
+    await page.getByRole("button", {name: "Submit"}).click({timeout:10000}); //10 seconds for this action
     await lowExpect(page.locator(".my-4")).toHaveText("Shop");
 
 });

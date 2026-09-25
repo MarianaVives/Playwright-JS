@@ -1,3 +1,5 @@
+const { time } = require("node:console");
+
 class APIUtils {
 
     constructor(apiContext, loginPayload) {
@@ -7,8 +9,8 @@ class APIUtils {
 
     async getToken() {
         let loginURL = "https://rahulshettyacademy.com/api/ecom/auth/login";
-        const loginResponse = await this.apiContext.post(loginURL, { data: this.loginPayload });
-        console.log(loginResponse);
+        const loginResponse = await this.apiContext.post(loginURL, 
+            { data: this.loginPayload });
         const loginResponse_json = await loginResponse.json();
         const token = loginResponse_json.token;
         return token;
@@ -27,6 +29,8 @@ class APIUtils {
                 },
             });
         const createOrderResponse_json = await createOrderResponse.json();
+        console.log(createOrderResponse_json);
+
         const orderId = createOrderResponse_json.orders[0];
         response.orderId = orderId;
         return response;

@@ -1,6 +1,6 @@
 //Documentation: https://playwright.dev/
 const { test, expect, request } = require('@playwright/test');
-const { APIUtils } = require("./utils/APIUtils");
+const { APIUtils } = require("../utils/APIUtils");
 
 const productOrderId = "6960eae1c941646b7a8b3ed3";
 const country = "Mexico";
